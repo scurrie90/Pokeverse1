@@ -1,0 +1,39 @@
+﻿@page
+@model PokeVerse.Pages.CatalogueModel
+
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <form method="get">
+                <label class="app-product-label" data-title="type">
+                    <select asp-for="@Model.PokemonIndex.TypesFilterApplied" asp-items="@Model.PokemonIndex.Types" class="app-product-filter" style="background-color: lightyellow; color:black; height: 2em; width:8em;"></select>
+                </label>
+                <button type="submit" class="app-product-send" style="background-color: lightyellow; height: 2em">
+                    Go
+                </button>
+            </form>
+        </div>
+    </div>
+
+        <partial name="_pagination" for="@Model.PokemonIndex.PaginationInfo" />
+
+<div class="app-product-items row justify-content-center">
+    @if (Model.PokemonIndex != null && Model.PokemonIndex.Pokemons.Any())
+    {
+        @foreach (var item in Model.PokemonIndex.Pokemons)
+        {
+            item.ImageUrl = "./images/" + item.PokeNumber.ToString("D3") + ".png";
+
+            <partial name="_pokemonPartial" for="@item" />
+        }
+    }
+    else
+    {
+        <p>No Pokemon!</p>
+    }
+</div>
+
+
+</body>

@@ -1,0 +1,100 @@
+﻿@page
+@model RegisterModel
+
+<body class="login">
+    <div class="container">
+        <div class="row">
+            <div class="col align-self-end">
+                <div class="img-container">
+                    <img class="mt-5" style="height:100%; width:80%;" src="~/images/snorlax-gif.gif" />
+                </div>
+                <div class="row justify-content-center">
+                    <a asp-page="./Login"  id="signinbtn" type="submit" class="btn btn-lg m-5">Sign In Here</a>
+                </div>
+            </div>
+
+            <div class="col">
+                <form id="account" method="post" class="py-4">
+                    <div class="d-flex justify-content-center">
+                        <i class="icon-map-marker icon-4x text-success"></i>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <h1 style="font-family: 'VT323', monospace;">Join Pokeverse!</h1>
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                    </div>
+                    <div class="form-group my-4 py-1">
+                        <input asp-for="Input.Email" class="form-control" placeholder="Email address*" required autofocus />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group my-4 py-1">
+                        <input asp-for="Input.Password" class="form-control" placeholder="Password*" required />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group my-4 py-1">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="Confirm your Password*" required />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group my-3 py-1">
+                        <div class="checkbox">
+                            <label asp-for="Input.ByClick">
+                                <input asp-for="Input.ByClick" />
+                                @Html.DisplayNameFor(m => m.Input.ByClick)
+                            </label><a href="#"> Terms and Conditions</a>
+                        </div>
+                    </div>
+                    <div id="ReCaptchaV2Container"></div><br />
+                    <label id="lblCaptchaMessage"></label><br />
+                    <div class="form-group my-3 py-3">
+                        <button id="signinbtn" type="submit" class="btn btn-lg btn-block">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://kit.fontawesome.com/485afd012e.js" crossorigin="anonymous"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=renderRecaptcha&render=explicit" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script type="text/javascript">
+    // Style and draw reCAPTCHA.
+    var renderRecaptcha = function () {
+        grecaptcha.render('ReCaptchaV2Container', {
+            'sitekey':  '@Model.CaptchaSiteKey',
+            'callback': reCaptchaCallback,
+            theme:      'light',    //light or dark
+            type:       'image',    // image or audio
+            size:       'normal'    //normal or compact
+        });
+    };
+
+    var reCaptchaCallback = function (response) {
+        // If reCAPTCHA is successful display it.
+        if (response !== '') {
+            jQuery('#lblCaptchaMessage').css('color', 'green').html('Success');
+            $(':input[type="submit"]').prop('disabled', false);
+        }
+    };
+
+    // Check reCAPTCHA validation.
+    jQuery('button[type="button"]').click(function (e) {
+        var message = 'Please check the checkbox';
+        if (typeof (grecaptcha) != 'undefined') {
+            var response = grecaptcha.getResponse();
+            (response.length === 0) ? (message = 'Captcha verification failed')
+                                    : (message = 'Success!');
+        }
+        jQuery('#lblCaptchaMessage').html(message);
+        jQuery('#lblCaptchaMessage').css('color',
+                              (message.toLowerCase() == 'success!') ? "green" : "red");
+    });
+
+    // Disable button when form loads.
+    $(document).ready(function () {
+        $(':input[type="submit"]').prop('disabled', true);
+    });
+    </script>
+}
